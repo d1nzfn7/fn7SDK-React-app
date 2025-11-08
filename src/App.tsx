@@ -4,6 +4,7 @@ import SetupSection from './components/SetupSection'
 import ContextDisplay from './components/ContextDisplay'
 import FirebaseOperations from './components/FirebaseOperations'
 import ResultsDisplay from './components/ResultsDisplay'
+import { firebaseConfig } from './config/firebase'
 import './App.css'
 
 interface SDKInstance {
@@ -14,6 +15,9 @@ interface SDKInstance {
   searchFirebaseData: (queryConstraints: any, limit: number, orderBy?: string, customHeaders?: object) => Promise<any[]>
   getCustomFirebaseToken: (customHeaders?: object) => Promise<any>
   startFirebaseListener: (doc_type: string, doc_id: string, options?: any) => Promise<any>
+  uploadToStorage: (filenames: string[], files: File[], folder?: string, appName?: string) => Promise<string[]>
+  getFromStorage: (folderName: string, fileName: string, appName?: string) => Promise<string>
+  getBlobFromStorage: (folderName: string, fileName: string, appName?: string) => Promise<Blob>
   userContext: () => any
   getUserId: () => string | undefined
   getUserOrgHkey: () => string | undefined
@@ -41,7 +45,7 @@ function App() {
     const initSDK = async () => {
       try {
         setSdkError(null)
-        const SDK = await import('http://localhost:8080/sdk.esm.js')
+        const SDK = await import('http://localhost:8082/sdk.esm.js')
 
         // Quick diagnostic
         console.log('Full SDK module:', SDK)
@@ -49,7 +53,7 @@ function App() {
         console.log('Named FN7SDK:', SDK.FN7SDK)
         console.log('Are they the same?', SDK.default === SDK.FN7SDK)
 
-        const sdkInstance = new SDK.FN7SDK() as SDKInstance
+        const sdkInstance = new SDK.FN7SDK(undefined, firebaseConfig) as SDKInstance
 
         // Verify the instance
         console.log('sdkInstance:', sdkInstance)
@@ -59,7 +63,7 @@ function App() {
         setSdk(sdkInstance)
         setSdkReady(true)
       } catch (err: any) {
-        setSdkError(err.message || 'Failed to load SDK from http://localhost:8080/sdk.esm.js')
+        setSdkError(err.message || 'Failed to load SDK from http://localhost:8082/sdk.esm.js')
         setSdkReady(false)
       }
     }

@@ -22,14 +22,14 @@ For local testing, you can serve the SDK from a local server:
 
 ```bash
 cd ui/app/libs/fn7-sdk/dist
-python3 -m http.server 8080
+python3 -m http.server 8082
 # or
-npx serve -p 8080
+npx serve -p 8082
 ```
 
 Then import in your code:
 ```javascript
-const SDK = await import('http://localhost:8080/sdk.esm.js');
+const SDK = await import('http://localhost:8082/sdk.esm.js');
 ```
 
 ## Quick Start

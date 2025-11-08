@@ -25,10 +25,10 @@ const Header: React.FC<HeaderProps> = ({ sdkReady, sdkError }) => {
       {sdkError && (
         <div className="alert alert-warning" style={{ marginTop: '15px' }}>
           <strong>Note:</strong> Make sure the SDK server is running on{' '}
-          <code>http://localhost:8080</code>. You can start it by running:
+          <code>http://localhost:8082</code>. You can start it by running:
           <pre style={{ marginTop: '10px', padding: '10px', background: '#fff', borderRadius: '4px' }}>
             cd ui/app/libs/fn7-sdk/dist{'\n'}
-            python3 -m http.server 8080
+            python3 -m http.server 8082
           </pre>
         </div>
       )}

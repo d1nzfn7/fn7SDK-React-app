@@ -33,18 +33,18 @@ npm install
 
 ### 1. Start the SDK Server
 
-The React app expects the SDK to be served from `http://localhost:8080/sdk.esm.js`.
+The React app expects the SDK to be served from `http://localhost:8082/sdk.esm.js`.
 
 **Option A: Using Python**
 ```bash
 cd ui/app/libs/fn7-sdk/dist
-python3 -m http.server 8080
+python3 -m http.server 8082
 ```
 
 **Option B: Using npx serve**
 ```bash
 cd ui/app/libs/fn7-sdk/dist
-npx serve -p 8080
+npx serve -p 8082
 ```
 
 Keep this server running while using the React app.
@@ -195,8 +195,8 @@ This app tests the following FN7 SDK functions:
 ## Troubleshooting
 
 ### SDK Not Loading
-- **Error**: "Failed to load SDK from http://localhost:8080/sdk.esm.js"
-- **Solution**: Make sure the SDK server is running on port 8080. Check the terminal where you started the server.
+- **Error**: "Failed to load SDK from http://localhost:8082/sdk.esm.js"
+- **Solution**: Make sure the SDK server is running on port 8082. Check the terminal where you started the server.
 
 ### Context Not Showing
 - **Issue**: Context information shows "N/A"
@@ -240,7 +240,7 @@ npm run lint
 
 ## Notes
 
-- The SDK is loaded dynamically from `http://localhost:8080/sdk.esm.js` for local development
+- The SDK is loaded dynamically from `http://localhost:8082/sdk.esm.js` for local development
 - All Firebase operations make actual API calls to `/api/k8s/firebase/*` endpoints
 - The app requires both `user_context` and `app_context` in localStorage to function properly
 - All operations include loading states and error handling
