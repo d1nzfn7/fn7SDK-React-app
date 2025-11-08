@@ -28,6 +28,7 @@ npx serve -p 8082
 ```
 
 Then import in your code:
+
 ```javascript
 const SDK = await import('http://localhost:8082/sdk.esm.js');
 ```
@@ -39,12 +40,21 @@ const SDK = await import('http://localhost:8082/sdk.esm.js');
 ```html
 <script src="https://cdn.fn7.io/sdk/v1.0.0/sdk.js"></script>
 <script>
-  const sdk = new FN7SDK.default();
+  const firebaseConfig = {
+    apiKey: 'YOUR_API_KEY',
+    authDomain: 'YOUR_AUTH_DOMAIN',
+    projectId: 'YOUR_PROJECT_ID',
+    storageBucket: 'YOUR_STORAGE_BUCKET',
+    messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+    appId: 'YOUR_APP_ID',
+  };
+  const sdk = new FN7SDK.default(undefined, firebaseConfig);
 
   // Use SDK functions
-  sdk.getFirebaseData('Users', 'user123')
-    .then(data => console.log(data))
-    .catch(err => console.error(err));
+  sdk
+    .getFirebaseData('Users', 'user123')
+    .then((data) => console.log(data))
+    .catch((err) => console.error(err));
 </script>
 ```
 
@@ -52,8 +62,9 @@ const SDK = await import('http://localhost:8082/sdk.esm.js');
 
 ```javascript
 import FN7SDK from '@fn7/sdk';
+import { environment } from './environments/environment';
 
-const sdk = new FN7SDK();
+const sdk = new FN7SDK(undefined, environment.firebase);
 
 // Use SDK functions
 const data = await sdk.getFirebaseData('Users', 'user123');
@@ -65,12 +76,22 @@ console.log(data);
 ```javascript
 const FN7SDK = require('@fn7/sdk');
 
-const sdk = new FN7SDK();
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_AUTH_DOMAIN',
+  projectId: 'YOUR_PROJECT_ID',
+  storageBucket: 'YOUR_STORAGE_BUCKET',
+  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
+  appId: 'YOUR_APP_ID',
+};
+
+const sdk = new FN7SDK(undefined, firebaseConfig);
 
 // Use SDK functions
-sdk.getFirebaseData('Users', 'user123')
-  .then(data => console.log(data))
-  .catch(err => console.error(err));
+sdk
+  .getFirebaseData('Users', 'user123')
+  .then((data) => console.log(data))
+  .catch((err) => console.error(err));
 ```
 
 ## API Reference
@@ -78,17 +99,37 @@ sdk.getFirebaseData('Users', 'user123')
 ### Initialization
 
 ```javascript
-const sdk = new FN7SDK(baseUrl?);
+const sdk = new FN7SDK(baseUrl?, firebaseConfig);
 ```
 
 **Parameters:**
+
 - `baseUrl` (optional): Base URL for API calls. Defaults to empty string (uses relative paths).
+- `firebaseConfig` (required): Firebase configuration object.
 
 **Example:**
+
 ```javascript
-const sdk = new FN7SDK(); // Uses relative paths
+import { environment } from './environments/environment';
+
+const sdk = new FN7SDK(undefined, environment.firebase);
 // or
-const sdk = new FN7SDK('https://api.example.com'); // Uses absolute URL
+const sdk = new FN7SDK('https://api.example.com', environment.firebase);
+```
+
+**Firebase Config Structure:**
+
+```javascript
+{
+  apiKey: string;              // Required
+  authDomain: string;          // Required
+  projectId: string;           // Required
+  storageBucket: string;       // Required
+  messagingSenderId: string;   // Required
+  appId: string;               // Required
+  databaseURL?: string;        // Optional
+  measurementId?: string;      // Optional
+}
 ```
 
 ---
@@ -104,6 +145,7 @@ const data = await sdk.getFirebaseData(doc_type, doc_id, customHeaders?);
 ```
 
 **Parameters:**
+
 - `doc_type` (string): Document type (e.g., 'Users', 'Chats')
 - `doc_id` (string): Document ID
 - `customHeaders` (object, optional): Custom HTTP headers
@@ -111,6 +153,7 @@ const data = await sdk.getFirebaseData(doc_type, doc_id, customHeaders?);
 **Returns:** Promise<any> - The document data
 
 **Example:**
+
 ```javascript
 const userData = await sdk.getFirebaseData('Users', 'user123');
 console.log(userData);
@@ -127,6 +170,7 @@ const result = await sdk.createFirebaseData(doc_type, doc_id, data, customHeader
 ```
 
 **Parameters:**
+
 - `doc_type` (string): Document type
 - `doc_id` (string): Document ID
 - `data` (object): Data to create
@@ -135,10 +179,11 @@ const result = await sdk.createFirebaseData(doc_type, doc_id, data, customHeader
 **Returns:** Promise<any> - The created document
 
 **Example:**
+
 ```javascript
 const newUser = await sdk.createFirebaseData('Users', 'user456', {
   name: 'John Doe',
-  email: 'john@example.com'
+  email: 'john@example.com',
 });
 ```
 
@@ -153,6 +198,7 @@ const result = await sdk.updateFirebaseData(doc_type, doc_id, data, customHeader
 ```
 
 **Parameters:**
+
 - `doc_type` (string): Document type
 - `doc_id` (string): Document ID
 - `data` (object): Data to update
@@ -161,9 +207,10 @@ const result = await sdk.updateFirebaseData(doc_type, doc_id, data, customHeader
 **Returns:** Promise<any> - The updated document
 
 **Example:**
+
 ```javascript
 const updated = await sdk.updateFirebaseData('Users', 'user123', {
-  name: 'Jane Doe'
+  name: 'Jane Doe',
 });
 ```
 
@@ -178,6 +225,7 @@ const result = await sdk.deleteFirebaseData(doc_type, doc_id, customHeaders?);
 ```
 
 **Parameters:**
+
 - `doc_type` (string): Document type
 - `doc_id` (string): Document ID
 - `customHeaders` (object, optional): Custom HTTP headers
@@ -185,6 +233,7 @@ const result = await sdk.deleteFirebaseData(doc_type, doc_id, customHeaders?);
 **Returns:** Promise<any> - Deletion result
 
 **Example:**
+
 ```javascript
 await sdk.deleteFirebaseData('Users', 'user123');
 ```
@@ -200,6 +249,7 @@ const results = await sdk.searchFirebaseData(queryConstraints, limit, orderBy?, 
 ```
 
 **Parameters:**
+
 - `queryConstraints` (object): Query constraints (AND/OR conditions)
 - `limit` (number): Maximum number of results
 - `orderBy` (string, optional): Field to order by
@@ -208,13 +258,18 @@ const results = await sdk.searchFirebaseData(queryConstraints, limit, orderBy?, 
 **Returns:** Promise<any[]> - Array of matching documents
 
 **Example:**
+
 ```javascript
-const users = await sdk.searchFirebaseData({
-  AND: [
-    ['doc_type', '==', 'Users'],
-    ['status', '==', 'active']
-  ]
-}, 10, 'created_at');
+const users = await sdk.searchFirebaseData(
+  {
+    AND: [
+      ['doc_type', '==', 'Users'],
+      ['status', '==', 'active'],
+    ],
+  },
+  10,
+  'created_at'
+);
 ```
 
 ---
@@ -228,11 +283,13 @@ const token = await sdk.getCustomFirebaseToken(customHeaders?);
 ```
 
 **Parameters:**
+
 - `customHeaders` (object, optional): Custom HTTP headers
 
 **Returns:** Promise<any> - Token object
 
 **Example:**
+
 ```javascript
 const tokenData = await sdk.getCustomFirebaseToken();
 console.log(tokenData.token);
@@ -249,6 +306,7 @@ const data = await sdk.startFirebaseListener(doc_type, doc_id, options?);
 ```
 
 **Parameters:**
+
 - `doc_type` (string): Document type
 - `doc_id` (string): Document ID
 - `options` (object, optional):
@@ -258,8 +316,89 @@ const data = await sdk.startFirebaseListener(doc_type, doc_id, options?);
 **Returns:** Promise<any> - Current document data
 
 **Example:**
+
 ```javascript
 const data = await sdk.startFirebaseListener('Chats', 'chat123');
+```
+
+---
+
+## Firebase Storage Operations
+
+### uploadToStorage
+
+Upload files to Firebase Storage.
+
+```javascript
+const urls = await sdk.uploadToStorage(filenames, files, folder?, appName?);
+```
+
+**Parameters:**
+
+- `filenames` (string[]): Array of filenames
+- `files` (File[] | Blob[]): Array of files to upload
+- `folder` (string, optional): Folder path (default: 'definitions')
+- `appName` (string, optional): App name (auto-detected if not provided)
+
+**Returns:** Promise<string[]> - Array of download URLs
+
+**Example:**
+
+```javascript
+const files = [file1, file2];
+const filenames = ['image1.jpg', 'image2.png'];
+const urls = await sdk.uploadToStorage(filenames, files, 'assets');
+console.log(urls); // ['https://...', 'https://...']
+```
+
+---
+
+### getFromStorage
+
+Get download URL from Firebase Storage.
+
+```javascript
+const url = await sdk.getFromStorage(folderName, fileName, appName?);
+```
+
+**Parameters:**
+
+- `folderName` (string): Folder name
+- `fileName` (string): File name
+- `appName` (string, optional): App name (auto-detected if not provided)
+
+**Returns:** Promise<string> - Download URL
+
+**Example:**
+
+```javascript
+const url = await sdk.getFromStorage('assets', 'image1.jpg');
+console.log(url); // 'https://...'
+```
+
+---
+
+### getBlobFromStorage
+
+Get file as Blob from Firebase Storage.
+
+```javascript
+const blob = await sdk.getBlobFromStorage(folderName, fileName, appName?);
+```
+
+**Parameters:**
+
+- `folderName` (string): Folder name
+- `fileName` (string): File name
+- `appName` (string, optional): App name (auto-detected if not provided)
+
+**Returns:** Promise<Blob> - File blob
+
+**Example:**
+
+```javascript
+const blob = await sdk.getBlobFromStorage('assets', 'document.pdf');
+// Use blob for download or processing
 ```
 
 ---
@@ -401,9 +540,10 @@ const index = sdk.getFirebaseIndex('Users', 'user123');
 
 ```javascript
 import FN7SDK from '@fn7/sdk';
+import { environment } from './environments/environment';
 
-// Initialize SDK
-const sdk = new FN7SDK();
+// Initialize SDK with Firebase config
+const sdk = new FN7SDK(undefined, environment.firebase);
 
 // Get user context
 const userId = sdk.getUserId();
@@ -425,24 +565,36 @@ async function example() {
     // Create data
     const newChat = await sdk.createFirebaseData('Chats', 'chat123', {
       participants: [userId],
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     });
     console.log('Created chat:', newChat);
 
     // Update data
     await sdk.updateFirebaseData('Chats', 'chat123', {
-      last_message: 'Hello!'
+      last_message: 'Hello!',
     });
 
     // Search data
-    const chats = await sdk.searchFirebaseData({
-      AND: [
-        ['doc_type', '==', 'Chats'],
-        ['participants', 'array-contains', userId]
-      ]
-    }, 10);
+    const chats = await sdk.searchFirebaseData(
+      {
+        AND: [
+          ['doc_type', '==', 'Chats'],
+          ['participants', 'array-contains', userId],
+        ],
+      },
+      10
+    );
     console.log('User chats:', chats);
 
+    // Upload files
+    const files = [file1, file2];
+    const filenames = ['image1.jpg', 'image2.png'];
+    const urls = await sdk.uploadToStorage(filenames, files, 'assets');
+    console.log('Uploaded files:', urls);
+
+    // Get file URL
+    const fileUrl = await sdk.getFromStorage('assets', 'image1.jpg');
+    console.log('File URL:', fileUrl);
   } catch (error) {
     console.error('Error:', error);
   }
@@ -458,6 +610,7 @@ example();
 ### Browser Environment
 
 The SDK requires:
+
 - Modern browser with `fetch` API support
 - `localStorage` API (for context functions)
 - `window` object (for host detection)
@@ -465,6 +618,7 @@ The SDK requires:
 ### Authentication
 
 The SDK automatically reads authentication tokens from `localStorage`:
+
 - Looks for `user_context` in localStorage
 - Extracts `id_token` from user context
 - Adds `authorization` header to all requests
@@ -514,9 +668,10 @@ try {
 The SDK includes TypeScript definitions. Import types:
 
 ```typescript
-import FN7SDK from '@fn7/sdk';
+import FN7SDK, { FirebaseConfig } from '@fn7/sdk';
+import { environment } from './environments/environment';
 
-const sdk = new FN7SDK();
+const sdk = new FN7SDK(undefined, environment.firebase);
 
 // TypeScript will provide type hints
 const userId: string | undefined = sdk.getUserId();
@@ -527,11 +682,13 @@ const userId: string | undefined = sdk.getUserId();
 ## Versioning
 
 The SDK follows semantic versioning:
+
 - **Major version**: Breaking changes
 - **Minor version**: New features (backward compatible)
 - **Patch version**: Bug fixes (backward compatible)
 
 CDN URLs include major version:
+
 - `https://cdn.fn7.io/sdk/v1.0.0/sdk.js`
 - `https://cdn.fn7.io/sdk/v1.1.0/sdk.js`
 - `https://cdn.fn7.io/sdk/v2.0.0/sdk.js` (breaking changes)
@@ -541,4 +698,3 @@ CDN URLs include major version:
 ## Support
 
 For issues or questions, please refer to the main FN7 documentation or contact the development team.
-
