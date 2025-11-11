@@ -6,8 +6,21 @@ FN7 SDK is a JavaScript/TypeScript library that provides Firebase operations and
 
 ### From CDN (Production)
 
+**Latest Version:**
 ```html
-<script src="https://cdn.fn7.io/sdk/v1.0.0/sdk.js"></script>
+<script src="https://fn7.io/.fn7-sdk/frontend/latest/sdk.min.js"></script>
+```
+
+**Specific Version:**
+```html
+<script src="https://fn7.io/.fn7-sdk/frontend/v1.0.0/sdk.min.js"></script>
+```
+
+**ES Modules (Latest):**
+```html
+<script type="module">
+  import { SDK } from 'https://fn7.io/.fn7-sdk/frontend/latest/sdk.esm.js';
+</script>
 ```
 
 ### From npm (Coming Soon)
@@ -21,7 +34,7 @@ npm install @fn7/sdk
 For local testing, you can serve the SDK from a local server:
 
 ```bash
-cd ui/app/libs/fn7-sdk/dist
+cd packages/frontend/dist
 python3 -m http.server 8082
 # or
 npx serve -p 8082
@@ -38,7 +51,7 @@ const SDK = await import('http://localhost:8082/sdk.esm.js');
 ### Browser (UMD)
 
 ```html
-<script src="https://cdn.fn7.io/sdk/v1.0.0/sdk.js"></script>
+<script src="https://fn7.io/.fn7-sdk/frontend/latest/sdk.min.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: 'YOUR_API_KEY',
@@ -687,11 +700,12 @@ The SDK follows semantic versioning:
 - **Minor version**: New features (backward compatible)
 - **Patch version**: Bug fixes (backward compatible)
 
-CDN URLs include major version:
+CDN URLs include version:
 
-- `https://cdn.fn7.io/sdk/v1.0.0/sdk.js`
-- `https://cdn.fn7.io/sdk/v1.1.0/sdk.js`
-- `https://cdn.fn7.io/sdk/v2.0.0/sdk.js` (breaking changes)
+- `https://fn7.io/.fn7-sdk/frontend/latest/sdk.min.js` (always latest)
+- `https://fn7.io/.fn7-sdk/frontend/v1.0.0/sdk.min.js` (specific version)
+- `https://fn7.io/.fn7-sdk/frontend/v1.1.0/sdk.min.js` (specific version)
+- `https://fn7.io/.fn7-sdk/frontend/v2.0.0/sdk.min.js` (breaking changes)
 
 ---
 
